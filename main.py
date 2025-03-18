@@ -11,16 +11,16 @@ class HttpHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         pr_url = urllib.parse.urlparse(self.path)
         if pr_url.path == "/":
-            self.send_html_file("index.html")
+            self.send_html_file("./pages/index.html")
         elif pr_url.path == "/message":
-            self.send_html_file("message.html")
+            self.send_html_file("./pages/message.html")
         elif pr_url.path == "/read":
             self.send_messages_page()
         else:
             if pathlib.Path().joinpath(pr_url.path[1:]).exists():
                 self.send_static()
             else:
-                self.send_html_file("error.html", 404)
+                self.send_html_file("./pages/error.html", 404)
 
     def do_POST(self):
         data = self.rfile.read(int(self.headers["Content-Length"]))
@@ -67,7 +67,7 @@ class HttpHandler(BaseHTTPRequestHandler):
 
     def send_messages_page(self):
         env = Environment(loader=FileSystemLoader("."))
-        template = env.get_template("read.html")
+        template = env.get_template("./templates/read.html")
         with open("storage/data.json", "r") as file:
             messages = json.load(file)
         output = template.render(messages=messages)
